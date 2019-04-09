@@ -110,12 +110,7 @@ class LFM:
         self.q.loc[item_id] -= delta_q
 
     def train(self):
-        """
-        Args:
 
-        Returns:
-
-        """
         for step in range(self.iter_count):
             for user_id, item_dict in self.items_dict.items():
                 item_ids = list(item_dict.keys())

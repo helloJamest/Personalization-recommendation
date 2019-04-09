@@ -8,16 +8,19 @@ import math
 import pandas as pd
 import time
 
-
-
-
-
 class PersonalRank:
     def __init__(self,X,Y):
         X,Y = ['user_'+str(x) for x in X],['item_'+str(y) for y in Y]
         self.G = self.get_graph(X,Y)
 
     def get_graph(self,X,Y):
+        """
+        Args:
+            X: user id
+            Y: item id
+        Returns:
+            graph:dic['user_id1':{'item_id1':1},  ... ]
+        """
         item_user = dict()
         for i in range(len(X)):
             user = X[i]
@@ -37,7 +40,7 @@ class PersonalRank:
         return G
 
 
-    def recommend(self, alpha, userID, max_depth,K):
+    def recommend(self, alpha, userID, max_depth,K=10):
         # rank = dict()
         userID = 'user_' + str(userID)
         rank = {x: 0 for x in self.G.keys()}
@@ -58,6 +61,10 @@ class PersonalRank:
         lst = sorted(rank.items(), key=lambda x: x[1], reverse=True)[:K]
         for ele in lst:
             print("%s:%.3f, \t" % (ele[0], ele[1]))
+
+
+
+
 
 
 

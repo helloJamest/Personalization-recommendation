@@ -1,9 +1,10 @@
-#-*-coding:utf-8-*-
-"""
-author:jamest
-date:20190306
-UserCF function
-"""
+# -*- coding: utf-8 -*-
+# @Time    : 20190306
+# @Author  : jamest
+# @Site    :
+# @File    : UserCF function
+# @Software: PyCharm
+
 import math
 import pandas as pd
 
