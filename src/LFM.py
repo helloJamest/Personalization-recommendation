@@ -95,11 +95,19 @@ class LFM:
              delta_q = lr * (derivation(E, q) + derivation（l2_square, q))
         """
         gradient_p = -e * self.q.ix[item_id].values
+<<<<<<< HEAD
         l2_p = 2 * self.lambd * self.p.ix[user_id].values
         delta_p = self.lr * (gradient_p + l2_p)
 
         gradient_q = -e * self.p.ix[user_id].values
         l2_q = 2 * self.lambd * self.q.ix[item_id].values
+=======
+        l2_p = self.lambd * self.p.ix[user_id].values
+        delta_p = self.lr * (gradient_p + l2_p)
+
+        gradient_q = -e * self.p.ix[user_id].values
+        l2_q = self.lambd * self.q.ix[item_id].values
+>>>>>>> 7d7fa4f60fc03789ab7c76574f56609d03313919
         delta_q = self.lr * (gradient_q + l2_q)
 
         self.p.loc[user_id] -= delta_p
