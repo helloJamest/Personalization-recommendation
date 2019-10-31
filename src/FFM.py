@@ -1,5 +1,10 @@
+#-*-coding:utf-8-*-
+"""
+author:jamest
+date:20191031
+FM function
+"""
 import tensorflow as tf
-import pandas as pd
 import numpy as np
 import os
 
