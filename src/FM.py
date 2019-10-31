@@ -22,14 +22,15 @@ def vectorize_dic(dic, label2index=None, hold_num=None):
     feat_num = len(list(dic.keys()))  # 特征数
     total_value_num = sample_num * feat_num
 
-    col_ix = np.empty(total_value_num, dtype=int)
+    col_ix = np.empty(total_value_num, dtype=int) # 列索引
 
     i = 0
     for k, lis in dic.items():
-        col_ix[i::feat_num] = [label2index[str(k) + str(el)] for el in lis]
+        col_ix[i::feat_num] = [label2index[str(k) + str(el)] for el in lis] # 'user'和'item'的映射
         i += 1
 
     row_ix = np.repeat(np.arange(sample_num), feat_num)
+
     data = np.ones(total_value_num)
 
     if hold_num is None:
@@ -82,47 +83,48 @@ def load_dataset():
     return x_train, x_test, y_train, y_test
 
 
-x_train, x_test, y_train, y_test = load_dataset()
+if __name__ == '__main__':
+    x_train, x_test, y_train, y_test = load_dataset()
 
-print("x_train shape: ", x_train.shape)
-print("x_test shape: ", x_test.shape)
-print("y_train shape: ", y_train.shape)
-print("y_test shape: ", y_test.shape)
+    print("x_train shape: ", x_train.shape)
+    print("x_test shape: ", x_test.shape)
+    print("y_train shape: ", y_train.shape)
+    print("y_test shape: ", y_test.shape)
 
-vec_dim = 10
-batch_size = 64
-epochs = 50
-learning_rate = 0.001
-sample_num, feat_num = x_train.shape
+    vec_dim = 10
+    batch_size = 64
+    epochs = 50
+    learning_rate = 0.001
+    sample_num, feat_num = x_train.shape
 
-x = tf.placeholder(tf.float32, shape=[None, feat_num], name="input_x")
-y = tf.placeholder(tf.float32, shape=[None, 1], name="ground_truth")
+    x = tf.placeholder(tf.float32, shape=[None, feat_num], name="input_x")
+    y = tf.placeholder(tf.float32, shape=[None, 1], name="ground_truth")
 
-w0 = tf.get_variable(name="bias", shape=(1), dtype=tf.float32)
-W = tf.get_variable(name="linear_w", shape=(feat_num), dtype=tf.float32)
-V = tf.get_variable(name="interaction_w", shape=(feat_num, vec_dim), dtype=tf.float32)
+    w0 = tf.get_variable(name="bias", shape=(1), dtype=tf.float32)
+    W = tf.get_variable(name="linear_w", shape=(feat_num), dtype=tf.float32)
+    V = tf.get_variable(name="interaction_w", shape=(feat_num, vec_dim), dtype=tf.float32)
 
-linear_part = w0 + tf.reduce_sum(tf.multiply(x, W), axis=1, keep_dims=True)
-interaction_part = 0.5 * tf.reduce_sum(tf.square(tf.matmul(x, V)) - tf.matmul(tf.square(x), tf.square(V)), axis=1,
-                                       keep_dims=True)
-y_hat = linear_part + interaction_part
-loss = tf.reduce_mean(tf.square(y - y_hat))
-train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+    linear_part = w0 + tf.reduce_sum(tf.multiply(x, W), axis=1, keep_dims=True)
+    interaction_part = 0.5 * tf.reduce_sum(tf.square(tf.matmul(x, V)) - tf.matmul(tf.square(x), tf.square(V)), axis=1,
+                                           keep_dims=True)
+    y_hat = linear_part + interaction_part
+    loss = tf.reduce_mean(tf.square(y - y_hat))
+    train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
 
-with tf.Session() as sess:
-    sess.run(tf.global_variables_initializer())
-    for e in range(epochs):
-        step = 0
-        print("epoch:{}".format(e))
-        for batch_x, batch_y in batcher(x_train, y_train, batch_size):
-            sess.run(train_op, feed_dict={x: batch_x, y: batch_y.reshape(-1, 1)})
-            step += 1
-            if step % 10 == 0:
-                for val_x, val_y in batcher(x_test, y_test):
-                    train_loss = sess.run(loss, feed_dict={x: batch_x, y: batch_y.reshape(-1, 1)})
-                    val_loss = sess.run(loss, feed_dict={x: val_x, y: val_y.reshape(-1, 1)})
-                    print("batch train_mse={}, val_mse={}".format(train_loss, val_loss))
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for e in range(epochs):
+            step = 0
+            print("epoch:{}".format(e))
+            for batch_x, batch_y in batcher(x_train, y_train, batch_size):
+                sess.run(train_op, feed_dict={x: batch_x, y: batch_y.reshape(-1, 1)})
+                step += 1
+                if step % 10 == 0:
+                    for val_x, val_y in batcher(x_test, y_test):
+                        train_loss = sess.run(loss, feed_dict={x: batch_x, y: batch_y.reshape(-1, 1)})
+                        val_loss = sess.run(loss, feed_dict={x: val_x, y: val_y.reshape(-1, 1)})
+                        print("batch train_mse={}, val_mse={}".format(train_loss, val_loss))
 
-    for val_x, val_y in batcher(x_test, y_test):
-        val_loss = sess.run(loss, feed_dict={x: val_x, y: val_y.reshape(-1, 1)})
-        print("test set rmse = {}".format(np.sqrt(val_loss)))
+        for val_x, val_y in batcher(x_test, y_test):
+            val_loss = sess.run(loss, feed_dict={x: val_x, y: val_y.reshape(-1, 1)})
+            print("test set rmse = {}".format(np.sqrt(val_loss)))

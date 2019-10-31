@@ -133,3 +133,7 @@ if __name__ == '__main__':
                 saver.save(sess, os.path.join(MODEL_SAVE_PATH, MODEL_NAME), global_step=steps)
                 writer = tf.summary.FileWriter(os.path.join(MODEL_SAVE_PATH, MODEL_NAME), tf.get_default_graph())
                 writer.close()
+
+
+
+

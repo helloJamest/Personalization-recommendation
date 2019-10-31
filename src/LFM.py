@@ -27,7 +27,8 @@ class LFM:
             res[i] = 1
         n = 0
         for i in range(len(items) * 3):
-            item = item_ids[random.randint(0, len(item_ids) - 1)]
+            r = random.randint(0, len(item_ids) - 1)
+            item = item_ids[r]
             if item in res:
                 continue
             res[item] = 0
@@ -95,19 +96,11 @@ class LFM:
              delta_q = lr * (derivation(E, q) + derivation（l2_square, q))
         """
         gradient_p = -e * self.q.ix[item_id].values
-<<<<<<< HEAD
         l2_p = 2 * self.lambd * self.p.ix[user_id].values
         delta_p = self.lr * (gradient_p + l2_p)
 
         gradient_q = -e * self.p.ix[user_id].values
-        l2_q = 2 * self.lambd * self.q.ix[item_id].values
-=======
-        l2_p = self.lambd * self.p.ix[user_id].values
-        delta_p = self.lr * (gradient_p + l2_p)
-
-        gradient_q = -e * self.p.ix[user_id].values
-        l2_q = self.lambd * self.q.ix[item_id].values
->>>>>>> 7d7fa4f60fc03789ab7c76574f56609d03313919
+        l2_q =  2 * self.lambd * self.q.ix[item_id].values
         delta_q = self.lr * (gradient_q + l2_q)
 
         self.p.loc[user_id] -= delta_p
@@ -158,25 +151,13 @@ if __name__ == '__main__':
     ratingsPath = '../data/ml-1m/ratings.dat'
     usersPath = '../data/ml-1m/users.dat'
 
-    # usersDF = pd.read_csv(usersPath,index_col=None,sep='::',header=None,names=['user_id', 'gender', 'age', 'occupation', 'zip'])
-    # moviesDF = pd.read_csv(moviesPath,index_col=None,sep='::',header=None,names=['movie_id', 'title', 'genres'])
     ratingsDF = pd.read_csv(ratingsPath, index_col=None, sep='::', header=None,names=['user_id', 'movie_id', 'rating', 'timestamp'])
 
-    X=ratingsDF['user_id'][:1000]
-    Y=ratingsDF['movie_id'][:1000]
+    ratingsDF = ratingsDF[ratingsDF['rating']>3]
+    X=ratingsDF['user_id'][:100].values
+    Y=ratingsDF['movie_id'][:100].values
 
     # LFM(X,Y).train()
     items = ratingsDF[ratingsDF['user_id']==1]['movie_id'].values
     rank = LFM(X,Y).predict(1,items)
     print('LFM result',rank)
-
-
-
-
-
-
-
-
-
-
-
