@@ -2,7 +2,7 @@
 """
 author:jamest
 date:20191031
-FM function
+FFM function
 """
 import tensorflow as tf
 import numpy as np
