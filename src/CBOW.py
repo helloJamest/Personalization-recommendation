@@ -27,17 +27,17 @@ class CBOW:
                          iter=10)
         return model
 
-    def recommend(self,userID,K):
+    def recommend(self,movieId,K):
         """
          Args:
-             userID:the user to recom
+             movieId:the movieId to find similar
              K:recom item num
 
          Returns:
              a dic,key:itemid ,value:sim score
          """
-        userID = str(userID)
-        rank = self.model.most_similar(userID,topn=K)
+        movieId = str(movieId)
+        rank = self.model.most_similar(movieId,topn=K)
         return rank
 
 if __name__ == '__main__':
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     ratingsPath = '../data/ml-1m/ratings.dat'
     usersPath = '../data/ml-1m/users.dat'
 
-    rank = CBOW(ratingsPath).recommend(userID=1,K=30)
+    rank = CBOW(ratingsPath).recommend(movieId=1,K=30)
     print('CBOW result',rank)
 
 

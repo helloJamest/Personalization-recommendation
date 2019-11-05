@@ -5,10 +5,16 @@ import numpy as np
 
 from sklearn.metrics import mean_squared_error
 from sklearn.linear_model import LogisticRegression
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 print('Load data...')
-df_train = pd.read_csv('data/train.csv')
-df_test = pd.read_csv('data/test.csv')
+df = pd.read_csv('../../data/ctr/train.csv')
+# df_test = pd.read_csv('../../data/ctr/test.csv')
+
+df = df.sample(frac=1.)
+cut_idx = int(df.shape[0]*0.7)
+df_train,df_test = df.iloc[:cut_idx],df.iloc[cut_idx:]
 
 NUMERIC_COLS = [
     "ps_reg_01", "ps_reg_02", "ps_reg_03",
@@ -64,8 +70,12 @@ print(y_pred[:10])
 print('Writing transformed training data')
 transformed_training_matrix = np.zeros([len(y_pred), len(y_pred[0]) * num_leaf],
                                        dtype=np.int64)  # N * num_tress * num_leafs
+
+print('y_pred[0]',y_pred[0])
+print('np.arange(len(y_pred[0])) * num_leaf',np.arange(len(y_pred[0])) * num_leaf)
 for i in range(0, len(y_pred)):
     temp = np.arange(len(y_pred[0])) * num_leaf + np.array(y_pred[i])
+    if not i:print(temp)
     transformed_training_matrix[i][temp] += 1
 
 
