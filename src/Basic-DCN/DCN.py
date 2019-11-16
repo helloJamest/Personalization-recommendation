@@ -93,8 +93,12 @@ class DCN(BaseEstimator, TransformerMixin):
             self._x0 = tf.reshape(self.x0, (-1, self.total_size, 1))
             x_l = self._x0
             for l in range(self.cross_layer_num):
-                x_l = tf.tensordot(tf.matmul(self._x0, x_l, transpose_b=True),
-                                    self.weights["cross_layer_%d" % l],1) + self.weights["cross_bias_%d" % l] + x_l
+                # x_l = tf.tensordot(tf.matmul(self._x0, x_l, transpose_b=True),
+                #                     self.weights["cross_layer_%d" % l],1) + self.weights["cross_bias_%d" % l] + x_l
+
+                # 注意计算顺序，可以加速很多
+                x_l = tf.tensordot(tf.reshape(x_l, [-1, 1, self.total_size]), self.weights["cross_layer_%d" % l], 1) * self._x0 + \
+                      self.weights["cross_bias_%d" % l] + x_l
 
             self.cross_network_out = tf.reshape(x_l, (-1, self.total_size))
 
