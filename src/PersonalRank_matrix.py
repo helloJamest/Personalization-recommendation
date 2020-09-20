@@ -148,7 +148,7 @@ if __name__ == '__main__':
     ratingsDF = pd.read_csv(ratingsPath, index_col=None, sep='::', header=None,names=['user_id', 'movie_id', 'rating', 'timestamp'])
     X=ratingsDF['user_id'][:1000]
     Y=ratingsDF['movie_id'][:1000]
-    rank = PersonalRank(X,Y).recommend_use_matrix(alpha=0.8,userID=1,K=30)
+    rank = PersonalRank(X,Y).recommend_use_matrix(alpha=0.8,userID=1,K=10)
     print('PersonalRank result',rank)
 
 

@@ -58,6 +58,8 @@ class PersonalRank:
         end = time.time()
         print('use_time', end - begin)
         lst = sorted(rank.items(), key=lambda x: x[1], reverse=True)[:K]
+        print(rank.items())
+        print(len(lst))
         for ele in lst:
             print("%s:%.3f, \t" % (ele[0], ele[1]))
 
@@ -71,7 +73,7 @@ if __name__ == '__main__':
     ratingsDF = pd.read_csv(ratingsPath, index_col=None, sep='::', header=None,names=['user_id', 'movie_id', 'rating', 'timestamp'])
     X=ratingsDF['user_id'][:1000]
     Y=ratingsDF['movie_id'][:1000]
-    PersonalRank(X,Y).recommend(alpha=0.8,userID=1,max_depth=50,K=30)#输出对用户1推荐的 top10 item
+    PersonalRank(X,Y).recommend(alpha=0.8,userID=1,max_depth=50,K=10)#输出对用户1最接近的 top10
     # print('PersonalRank result',rank)
 
 
